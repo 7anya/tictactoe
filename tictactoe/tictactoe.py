@@ -118,21 +118,29 @@ def utility(board):
         return 0
 
 
-def MaxValue(board):
+
+
+def MaxValue(board, alpha, beta):
     if terminal(board):
         return utility(board)
     v = -737427379378478374
     for action in actions(board):
-        v = max(v, MinValue(result(board, action)))
+        v = max(v, MinValue(result(board, action), alpha, beta))
+        alpha = max(alpha, v)
+        if beta <= alpha:
+            break
     return v
 
 
-def MinValue(board):
+def MinValue(board, alpha, beta):
     if terminal(board):
         return utility(board)
     v = 737427379378478374
     for action in actions(board):
-        v = min(v, MaxValue(result(board, action)))
+        v = min(v, MaxValue(result(board, action), alpha, beta))
+        beta = min(beta, v)
+        if (beta <= alpha):
+            break
     return v
 
 
@@ -142,12 +150,15 @@ def minimax(board):
     """
     maximum = -9876544282792
     minimum = 987736356373
+    alpha = -2837643415347874
+    beta = 46876435468435467
+
     if board == [[EMPTY] * 3] * 3:
         return 0, 0
     finalaction = None
     if player(board) == "X":
         for action in actions(board):
-            minval = MinValue(result(board, action))
+            minval = MinValue(result(board, action), alpha, beta)
             if minval > maximum:
                 finalaction = action
                 maximum = minval
@@ -155,7 +166,7 @@ def minimax(board):
 
     elif player(board) == "O":
         for action in actions(board):
-            maxval = MaxValue(result(board, action))
+            maxval = MaxValue(result(board, action), alpha, beta)
             if maxval < minimum:
                 finalaction = action
                 minimum = maxval
